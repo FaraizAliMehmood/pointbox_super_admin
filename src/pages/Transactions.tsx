@@ -17,6 +17,7 @@ const Transactions = () => {
     transactionId: '',
     customerName: '',
     customerEmail: '',
+    companyName: '',
     startDate: '',
     endDate: '',
     startTime: '',
@@ -38,7 +39,7 @@ const Transactions = () => {
     // Apply filters whenever transactions or filters change
     applyFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_transactions, filters.transactionId, filters.customerName, filters.customerEmail, filters.startDate, filters.endDate, filters.startTime, filters.endTime]);
+  }, [_transactions, filters.transactionId, filters.customerName, filters.customerEmail, filters.companyName, filters.startDate, filters.endDate, filters.startTime, filters.endTime]);
 
   const loadTransactions = async (transactionId?: string) => {
     try {
@@ -50,6 +51,7 @@ const Transactions = () => {
           customerId: t.customer?._id || t.customer || '',
           customerName: t.customer?.username || t.customer?.name || 'Unknown',
           customerEmail: t.customer?.email || '',
+          companyName: t.company?.companyName || t.company?.name || t.brand || '',
           amount: t.amount || t.points || 0,
           type: t.type === 'redeem' ? 'redeem' : 'earn',
           status: t.status || 'completed',
@@ -97,6 +99,13 @@ const Transactions = () => {
       );
     }
 
+    // Filter by Company Name
+    if (filters.companyName.trim()) {
+      filtered = filtered.filter((t) =>
+        (t.companyName || '').toLowerCase().includes(filters.companyName.toLowerCase().trim())
+      );
+    }
+
     // Filter by Date Range
     if (filters.startDate || filters.endDate) {
       filtered = filtered.filter((t) => {
@@ -130,6 +139,7 @@ const Transactions = () => {
       transactionId: '',
       customerName: '',
       customerEmail: '',
+      companyName: '',
       startDate: '',
       endDate: '',
       startTime: '',
@@ -142,6 +152,7 @@ const Transactions = () => {
       filters.transactionId.trim() ||
       filters.customerName.trim() ||
       filters.customerEmail.trim() ||
+      filters.companyName.trim() ||
       filters.startDate ||
       filters.endDate
     );
@@ -167,6 +178,7 @@ const Transactions = () => {
     const headers = [
       'Transaction ID',
       'Customer Name',
+      'Company Name',
       'Amount',
       'Type',
       'Status',
@@ -181,6 +193,7 @@ const Transactions = () => {
         const row = [
           `"${transaction.id || ''}"`,
           `"${(transaction.customerName || '').replace(/"/g, '""')}"`,
+          `"${(transaction.companyName || 'N/A').replace(/"/g, '""')}"`,
           `"${transaction.amount || 0}"`,
           `"${transaction.type === 'earn' ? 'Earn' : 'Redeem'}"`,
           `"${transaction.status || ''}"`,
@@ -242,7 +255,7 @@ const Transactions = () => {
               {t('transactions.filters') || 'Filters'}
               {hasActiveFilters() && (
                 <span className="bg-white text-purple-600 rounded-full px-2 py-0.5 text-xs font-semibold">
-                  {[filters.transactionId, filters.customerName, filters.customerEmail, filters.startDate, filters.endDate].filter(Boolean).length}
+                  {[filters.transactionId, filters.customerName, filters.customerEmail, filters.companyName, filters.startDate, filters.endDate].filter(Boolean).length}
                 </span>
               )}
             </button>
@@ -292,6 +305,18 @@ const Transactions = () => {
                   value={filters.customerEmail}
                   onChange={(e) => setFilters({ ...filters, customerEmail: e.target.value })}
                   placeholder={t('transactions.searchByEmail') || 'Search by Customer Email'}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                />
+              </div>
+
+              {/* Company Name Filter */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  value={filters.companyName}
+                  onChange={(e) => setFilters({ ...filters, companyName: e.target.value })}
+                  placeholder={t('transactions.searchByCompanyName') || 'Search by Company Name'}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none bg-white"
                 />
               </div>
@@ -361,6 +386,7 @@ const Transactions = () => {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.transactionId')}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.customer')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.companyName') || 'Company Name'}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.amount')}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.type')}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('transactions.status')}</th>
@@ -371,7 +397,7 @@ const Transactions = () => {
             <tbody className="divide-y divide-gray-200">
               {filteredTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
                     {t('common.noData')}
                   </td>
                 </tr>
@@ -382,6 +408,7 @@ const Transactions = () => {
                       {transaction.id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.customerName}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.companyName || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.amount}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -451,6 +478,9 @@ const Transactions = () => {
                     <div>
                       <h3 className="text-sm font-medium text-gray-900">{transaction.id}</h3>
                       <p className="text-sm text-gray-500 mt-1">{transaction.customerName}</p>
+                      {transaction.companyName && (
+                        <p className="text-sm text-gray-400 mt-0.5">{transaction.companyName}</p>
+                      )}
                     </div>
                     <span className="text-lg font-bold text-gray-900">{transaction.amount}</span>
                   </div>
@@ -523,6 +553,10 @@ const Transactions = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('transactions.customer')}</label>
                 <p className="text-gray-900">{viewingTransaction.customerName}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('transactions.companyName') || 'Company Name'}</label>
+                <p className="text-gray-900">{viewingTransaction.companyName || 'N/A'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('transactions.amount')}</label>

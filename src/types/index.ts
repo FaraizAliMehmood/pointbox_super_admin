@@ -64,6 +64,7 @@ export interface Transaction {
   customerId: string;
   customerName: string;
   customerEmail?: string;
+  companyName?: string;
   amount: number;
   type: 'earn' | 'redeem';
   status: 'pending' | 'completed' | 'failed';
