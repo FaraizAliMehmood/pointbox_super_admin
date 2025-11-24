@@ -19,6 +19,7 @@ const Banners = () => {
     title: '',
     description: '',
     imageUrl: '',
+    productUrl: '',
     startDate: '',
     endDate: '',
     isActive: true,
@@ -47,6 +48,7 @@ const Banners = () => {
           description: b.description || '',
           imageUrl: b.image || b.imageUrl,
           link: b.link,
+          productUrl: b.productUrl || '',
           isActive: b.isActive !== false,
           type: b.type || 'regular',
           startDate: b.startDate,
@@ -101,6 +103,7 @@ const Banners = () => {
         formDataToSend.append('badge', formData.badge);
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description);
+        formDataToSend.append('productUrl', formData.productUrl);
         formDataToSend.append('type', formData.type);
         formDataToSend.append('startDate', formData.startDate);
         formDataToSend.append('endDate', formData.endDate);
@@ -116,7 +119,7 @@ const Banners = () => {
           await loadBanners();
           setShowModal(false);
           setEditingBanner(null);
-          setFormData({ badge: '', title: '', description: '', imageUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
           setImagePreview('');
           setUploadedFile(null);
           if (fileInputRef.current) {
@@ -136,6 +139,7 @@ const Banners = () => {
         formDataToSend.append('badge', formData.badge);
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description);
+        formDataToSend.append('productUrl', formData.productUrl);
         formDataToSend.append('type', formData.type);
         formDataToSend.append('startDate', formData.startDate);
         formDataToSend.append('endDate', formData.endDate);
@@ -144,7 +148,7 @@ const Banners = () => {
         if (response.success) {
           await loadBanners();
           setShowModal(false);
-          setFormData({ badge: '', title: '', description: '', imageUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
           setImagePreview('');
           setUploadedFile(null);
           if (fileInputRef.current) {
@@ -172,6 +176,7 @@ const Banners = () => {
       title: banner.title,
       description: banner.description || '',
       imageUrl: banner.imageUrl,
+      productUrl: banner.productUrl || '',
       isActive: banner.isActive,
       type: banner.type || 'regular',
       startDate: banner.startDate || '',
@@ -230,7 +235,7 @@ const Banners = () => {
           <button
             onClick={() => {
               setEditingBanner(null);
-              setFormData({ badge: '', title: '', description: '', imageUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+              setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
               setImagePreview('');
               setUploadedFile(null);
               if (fileInputRef.current) {
@@ -458,7 +463,7 @@ const Banners = () => {
                 onClick={() => {
                   setShowModal(false);
                   setEditingBanner(null);
-                  setFormData({ badge: '', title: '', description: '', imageUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+                  setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
                   setImagePreview('');
                   setUploadedFile(null);
                   if (fileInputRef.current) {
@@ -528,6 +533,16 @@ const Banners = () => {
                   value={formData.endDate}
                   onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product URL</label>
+                <input
+                  type="url"
+                  value={formData.productUrl}
+                  onChange={(e) => setFormData({ ...formData, productUrl: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                  placeholder="Enter product URL (optional)"
                 />
               </div>
               <div>
@@ -622,7 +637,7 @@ const Banners = () => {
                   onClick={() => {
                     setShowModal(false);
                     setEditingBanner(null);
-                    setFormData({ badge: '', title: '', description: '', imageUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+                    setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
                     setImagePreview('');
                     setUploadedFile(null);
                     setSubmitting(false);

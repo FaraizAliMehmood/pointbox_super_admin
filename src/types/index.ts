@@ -87,6 +87,7 @@ export interface Banner {
   description?: string;
   imageUrl: string;
   link?: string;
+  productUrl?: string;
   isActive: boolean;
   type: 'regular' | 'special_event';
   startDate?: string;
