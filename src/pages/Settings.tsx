@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from '../components/LanguageSelector';
 import Modal from '../components/Modal';
-import { X, Image as ImageIcon, Save, FileText, MapPin, Phone, Mail, Map, Loader2 } from 'lucide-react';
+import { X, Image as ImageIcon, Save, FileText, MapPin, Phone, Mail, Map, Loader2, Link } from 'lucide-react';
 import apiService from '../services/api';
 
 interface CompanyInfo {
@@ -11,6 +11,12 @@ interface CompanyInfo {
   phoneNumber: string;
   email: string;
   googleLocation: string;
+  instagram: string;
+  facebook: string;
+  x: string;
+  youtube: string;
+  tiktok: string;
+  linkedin: string;
 }
 
 const Settings = () => {
@@ -33,6 +39,12 @@ const Settings = () => {
     phoneNumber: '',
     email: '',
     googleLocation: '',
+    instagram: '',
+    facebook: '',
+    x: '',
+    youtube: '',
+    tiktok: '',
+    linkedin: '',
   });
 
   useEffect(() => {
@@ -57,6 +69,12 @@ const Settings = () => {
           phoneNumber: settings.phone || '',
           email: settings.email || '',
           googleLocation: settings.location || '',
+          instagram: settings.instagram || '',
+          facebook: settings.facebook || '',
+          x: settings.x || '',
+          youtube: settings.youtube || '',
+          tiktok: settings.tiktok || '',
+          linkedin: settings.linkedin || '',
         });
       }
     } catch (error: any) {
@@ -166,6 +184,12 @@ const Settings = () => {
         phone: companyInfo.phoneNumber,
         email: companyInfo.email,
         location: companyInfo.googleLocation,
+        instagram: companyInfo.instagram,
+        facebook: companyInfo.facebook,
+        x: companyInfo.x,
+        youtube: companyInfo.youtube,
+        tiktok: companyInfo.tiktok,
+        linkedin: companyInfo.linkedin,
       };
 
       const response = await apiService.updateSettings(settingsData);
@@ -403,6 +427,102 @@ const Settings = () => {
                 </a>
               </div>
             )}
+          </div>
+
+          {/* Social Media Links Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Social Media Links</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Instagram */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  Instagram
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.instagram}
+                  onChange={(e) => handleCompanyInfoChange('instagram', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://instagram.com/yourprofile"
+                />
+              </div>
+
+              {/* Facebook */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  Facebook
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.facebook}
+                  onChange={(e) => handleCompanyInfoChange('facebook', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://facebook.com/yourpage"
+                />
+              </div>
+
+              {/* X (Twitter) */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  X (Twitter)
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.x}
+                  onChange={(e) => handleCompanyInfoChange('x', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://x.com/yourprofile"
+                />
+              </div>
+
+              {/* YouTube */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  YouTube
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.youtube}
+                  onChange={(e) => handleCompanyInfoChange('youtube', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://youtube.com/@yourchannel"
+                />
+              </div>
+
+              {/* TikTok */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  TikTok
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.tiktok}
+                  onChange={(e) => handleCompanyInfoChange('tiktok', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://tiktok.com/@yourprofile"
+                />
+              </div>
+
+              {/* LinkedIn */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Link size={16} className="text-purple-600" />
+                  LinkedIn
+                </label>
+                <input
+                  type="url"
+                  value={companyInfo.linkedin}
+                  onChange={(e) => handleCompanyInfoChange('linkedin', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  placeholder="https://linkedin.com/company/yourcompany"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Save Button */}
