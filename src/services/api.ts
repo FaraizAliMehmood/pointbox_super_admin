@@ -250,6 +250,16 @@ class ApiService {
   }
 
   /**
+   * Toggle company status (activate/deactivate)
+   */
+  async toggleCompanyStatus(id: string, isActive: boolean): Promise<ApiResponse<any>> {
+    return this.request(`/companies/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ isActive }),
+    });
+  }
+
+  /**
    * Delete company
    */
   async deleteCompany(id: string): Promise<ApiResponse<void>> {

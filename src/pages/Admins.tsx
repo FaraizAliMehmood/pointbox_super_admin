@@ -45,6 +45,7 @@ const Admins = () => {
     try {
       setLoading(true);
       const response = await apiService.getAdmins();
+      console.log(response);
       if (response.success && response.data) {
         // Map API response to Admin type
         const mappedAdmins: Admin[] = response.data.map((admin: any) => {

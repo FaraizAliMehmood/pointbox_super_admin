@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, Edit, Trash2, X, Eye, EyeOff, Upload, Image as ImageIcon, MapPin, Globe, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Eye, EyeOff, Upload, Image as ImageIcon, MapPin, Globe, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import type { Company } from '../types';
 import apiService from '../services/api';
@@ -23,13 +23,15 @@ const Companies = () => {
     country: '',
     phone: '',
     email: '',
-    password: ''
+    password: '',
+    isActive: true
   });
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [uploadedLogoFile, setUploadedLogoFile] = useState<File | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [togglingStatus, setTogglingStatus] = useState<string | null>(null);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
 
   // List of countries
@@ -107,6 +109,7 @@ const Companies = () => {
       formDataToSend.append('country', formData.country);
       formDataToSend.append('phone', formData.phone);
       formDataToSend.append('email', formData.email);
+      formDataToSend.append('isActive', formData.isActive.toString());
       
       // Append logo file if uploaded
       if (uploadedLogoFile) {
@@ -125,7 +128,7 @@ const Companies = () => {
           await loadCompanies();
           setShowModal(false);
           setEditingCompany(null);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '' });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', isActive: true });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -144,7 +147,7 @@ const Companies = () => {
         if (response.success) {
           await loadCompanies();
           setShowModal(false);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '' });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', isActive: true });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -177,7 +180,8 @@ const Companies = () => {
       country: company.country || '',
       phone: company.phone || '',
       email: company.email || '',
-      password: ''
+      password: '',
+      isActive: company.isActive !== false
     });
     setLogoPreview(company.logo || '');
     setUploadedLogoFile(null);
@@ -211,6 +215,25 @@ const Companies = () => {
     }
   };
 
+  const toggleStatus = async (id: string) => {
+    try {
+      setTogglingStatus(id);
+      const company = companies.find(comp => comp.id === id);
+      if (!company) return;
+
+      const newStatus = !company.isActive;
+      const response = await apiService.toggleCompanyStatus(id, newStatus);
+      if (response.success) {
+        await loadCompanies();
+      }
+    } catch (error) {
+      console.error('Error toggling company status:', error);
+      alert('Failed to update company status. Please try again.');
+    } finally {
+      setTogglingStatus(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -229,7 +252,7 @@ const Companies = () => {
         <button
           onClick={() => {
             setEditingCompany(null);
-            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '' });
+            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '', isActive: true });
             setLogoPreview('');
             setUploadedLogoFile(null);
             setShowPassword(false);
@@ -254,13 +277,14 @@ const Companies = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">License Number</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">VAT Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {companies.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                     {t('common.noData')}
                   </td>
                 </tr>
@@ -272,6 +296,17 @@ const Companies = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{company.licenseNumber}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{company.vatNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          company.isActive
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {company.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
                         <button
@@ -294,6 +329,24 @@ const Companies = () => {
                           title="Delete"
                         >
                           <Trash2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => toggleStatus(company.id)}
+                          disabled={togglingStatus === company.id}
+                          className={`px-2 py-1 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                            company.isActive
+                              ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                              : 'bg-green-100 text-green-700 hover:bg-green-200'
+                          }`}
+                          title={company.isActive ? 'Deactivate' : 'Activate'}
+                        >
+                          {togglingStatus === company.id ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : company.isActive ? (
+                            <XCircle size={16} />
+                          ) : (
+                            <CheckCircle size={16} />
+                          )}
                         </button>
                       </div>
                     </td>
@@ -323,7 +376,18 @@ const Companies = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-4">
+                </div>
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      company.isActive
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {company.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleView(company)}
                       className="text-green-600 hover:text-green-800 p-1"
@@ -344,6 +408,24 @@ const Companies = () => {
                       title="Delete"
                     >
                       <Trash2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => toggleStatus(company.id)}
+                      disabled={togglingStatus === company.id}
+                      className={`p-1 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        company.isActive
+                          ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      }`}
+                      title={company.isActive ? 'Deactivate' : 'Activate'}
+                    >
+                      {togglingStatus === company.id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : company.isActive ? (
+                        <XCircle size={16} />
+                      ) : (
+                        <CheckCircle size={16} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -520,6 +602,20 @@ const Companies = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Active/Inactive Checkbox */}
+              <div className="flex items-center gap-3 pt-2">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 cursor-pointer"
+                />
+                <label htmlFor="isActive" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  {formData.isActive ? 'Active' : 'Inactive'}
+                </label>
               </div>
 
               <div className="flex gap-3 pt-4">

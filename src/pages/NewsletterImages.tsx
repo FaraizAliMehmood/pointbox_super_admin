@@ -120,6 +120,7 @@ const NewsletterImages = () => {
       } else {
         // Create newsletter
         const response = await apiService.createNewsletter(formDataToSend);
+        console.log(response);
         if (response.success) {
           await loadImages();
           setShowModal(false);
@@ -181,6 +182,28 @@ const NewsletterImages = () => {
       alert('Failed to delete newsletter. Please try again.');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleToggleActive = async (image: NewsletterImage) => {
+    try {
+      const newActiveStatus = !image.isActive;
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', image.title);
+      if (image.description) {
+        formDataToSend.append('description', image.description);
+      }
+      formDataToSend.append('isActive', newActiveStatus.toString());
+      
+      const response = await apiService.updateNewsletter(image.id, formDataToSend);
+      if (response.success) {
+        await loadImages();
+      } else {
+        alert('Failed to update status. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Error toggling status:', error);
+      alert(error.message || 'Failed to update status. Please try again.');
     }
   };
 
@@ -267,13 +290,21 @@ const NewsletterImages = () => {
                       {image.description || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          image.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {image.isActive ? 'Active' : 'Inactive'}
-                      </span>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={image.isActive}
+                          onChange={() => handleToggleActive(image)}
+                          className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
+                        />
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            image.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          {image.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </label>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
@@ -347,13 +378,21 @@ const NewsletterImages = () => {
                     {image.description && (
                       <p className="text-xs text-gray-500 mb-2 line-clamp-2">{image.description}</p>
                     )}
-                    <span
-                      className={`inline-block mt-2 px-2 py-1 rounded-full text-xs font-medium ${
-                        image.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {image.isActive ? 'Active' : 'Inactive'}
-                    </span>
+                    <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={image.isActive}
+                        onChange={() => handleToggleActive(image)}
+                        className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
+                      />
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          image.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {image.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </label>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -470,16 +509,28 @@ const NewsletterImages = () => {
                   placeholder={t('newsletterImages.descriptionPlaceholder')}
                 />
               </div>
-              <div>
-                <label className="flex items-center gap-2 cursor-pointer">
+              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <label className="flex items-center gap-3 cursor-pointer flex-1">
                   <input
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded"
+                    className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
                   />
-                  <span className="text-sm font-medium text-gray-700">{t('newsletterImages.isActive')}</span>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-700">{t('newsletterImages.isActive')}</span>
+                    <span className="text-xs text-gray-500">
+                      {formData.isActive ? 'This newsletter will be visible to users' : 'This newsletter will be hidden from users'}
+                    </span>
+                  </div>
                 </label>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    formData.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  {formData.isActive ? 'Active' : 'Inactive'}
+                </span>
               </div>
               {imagePreview && (
                 <div className="border border-gray-200 rounded-lg p-4">
