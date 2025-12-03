@@ -33,6 +33,7 @@ export interface Company {
   country?: string;
   phone?: string;
   email?: string;
+  employeeCount?: number;
   createdAt: string;
   isActive: boolean;
 }

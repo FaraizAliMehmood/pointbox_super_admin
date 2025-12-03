@@ -24,6 +24,7 @@ const Companies = () => {
     phone: '',
     email: '',
     password: '',
+    employeeCount: '',
     isActive: true
   });
   const [logoPreview, setLogoPreview] = useState<string>('');
@@ -59,6 +60,7 @@ const Companies = () => {
           country: comp.country,
           phone: comp.phone,
           email: comp.email,
+          employeeCount: comp.employeeCount,
           createdAt: comp.createdAt || new Date().toISOString(),
           isActive: comp.isActive !== false,
         }));
@@ -109,6 +111,9 @@ const Companies = () => {
       formDataToSend.append('country', formData.country);
       formDataToSend.append('phone', formData.phone);
       formDataToSend.append('email', formData.email);
+      if (formData.employeeCount) {
+        formDataToSend.append('employeeCount', formData.employeeCount);
+      }
       formDataToSend.append('isActive', formData.isActive.toString());
       
       // Append logo file if uploaded
@@ -128,7 +133,7 @@ const Companies = () => {
           await loadCompanies();
           setShowModal(false);
           setEditingCompany(null);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', isActive: true });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -147,7 +152,7 @@ const Companies = () => {
         if (response.success) {
           await loadCompanies();
           setShowModal(false);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', isActive: true });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -181,6 +186,7 @@ const Companies = () => {
       phone: company.phone || '',
       email: company.email || '',
       password: '',
+      employeeCount: company.employeeCount?.toString() || '',
       isActive: company.isActive !== false
     });
     setLogoPreview(company.logo || '');
@@ -252,7 +258,7 @@ const Companies = () => {
         <button
           onClick={() => {
             setEditingCompany(null);
-            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '', isActive: true });
+            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '', employeeCount: '', isActive: true });
             setLogoPreview('');
             setUploadedLogoFile(null);
             setShowPassword(false);
@@ -525,6 +531,18 @@ const Companies = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Employee Count</label>
+                <input
+                  type="number"
+                  value={formData.employeeCount}
+                  onChange={(e) => setFormData({ ...formData, employeeCount: e.target.value })}
+                  min="0"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                  placeholder="Enter number of employees"
+                />
+              </div>
               
               {/* Logo Upload */}
               <div>
@@ -690,6 +708,12 @@ const Companies = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
                 <p className="text-gray-900">{viewingCompany.phone}</p>
               </div>
+              {viewingCompany.employeeCount !== undefined && viewingCompany.employeeCount !== null && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Employee Count</label>
+                  <p className="text-gray-900">{viewingCompany.employeeCount}</p>
+                </div>
+              )}
               {viewingCompany.address && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t('companies.address')}</label>

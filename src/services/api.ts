@@ -2,9 +2,9 @@
  * Centralized API Service for Super Admin
  * Handles all API calls to the backend
  */
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/superadmin';
-const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/settings';
+//
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/superadmin';
+const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/settings';
 
 interface ApiResponse<T> {
   success: boolean;
