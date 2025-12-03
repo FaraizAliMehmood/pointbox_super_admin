@@ -52,7 +52,10 @@ const Transactions = () => {
           customerName: t.customer?.username || t.customer?.name || 'Unknown',
           customerEmail: t.customer?.email || '',
           companyName: t.company?.companyName || t.company?.name || t.brand || '',
-          amount: t.amount || t.points || 0,
+          amount:
+            typeof t.redeem_points === 'number'
+              ? t.redeem_points
+              : t.amount ?? t.points ?? 0,
           type: t.type === 'redeem' ? 'redeem' : 'earn',
           status: t.status || 'completed',
           description: t.description || t.notes || '',
