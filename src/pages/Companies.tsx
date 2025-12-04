@@ -11,6 +11,8 @@ const Companies = () => {
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [companyToDelete, setCompanyToDelete] = useState<{ id: string; name: string } | null>(null);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [viewingCompany, setViewingCompany] = useState<Company | null>(null);
@@ -161,9 +163,11 @@ const Companies = () => {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving company:', error);
-      alert('Failed to save company. Please try again.');
+      const errorMsg = error?.message || 'Failed to save company. Please try again.';
+      setErrorMessage(errorMsg);
+      setShowErrorModal(true);
     } finally {
       setSubmitting(false);
     }
@@ -804,6 +808,45 @@ const Companies = () => {
                   className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-all"
                 >
                   Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-red-600">Error</h2>
+              <button 
+                onClick={() => {
+                  setShowErrorModal(false);
+                  setErrorMessage('');
+                }} 
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="flex items-start gap-3 mb-6">
+                <XCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 flex-1">
+                  {errorMessage}
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowErrorModal(false);
+                    setErrorMessage('');
+                  }}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all"
+                >
+                  OK
                 </button>
               </div>
             </div>
