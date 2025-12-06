@@ -261,7 +261,8 @@ const Banners = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Link</th>
+            
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product URL</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -269,7 +270,7 @@ const Banners = () => {
             <tbody className="divide-y divide-gray-200">
               {banners.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                     {t('common.noData')}
                   </td>
                 </tr>
@@ -308,18 +309,19 @@ const Banners = () => {
                         {banner.type === 'special_event' ? t('banners.specialEvent') : t('banners.regular')}
                       </span>
                     </td>
+                  
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {banner.link ? (
+                      {banner.productUrl ? (
                         <a
-                          href={banner.link}
+                          href={banner.productUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline truncate max-w-xs block"
                         >
-                          {banner.link}
+                          {banner.productUrl}
                         </a>
                       ) : (
-                        <span className="text-gray-400">No link</span>
+                        <span className="text-gray-400">No product URL</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -398,17 +400,18 @@ const Banners = () => {
                     >
                       {banner.type === 'special_event' ? t('banners.specialEvent') : t('banners.regular')}
                     </span>
-                    {banner.link ? (
+                  
+                    {banner.productUrl ? (
                       <a
-                        href={banner.link}
+                        href={banner.productUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-blue-600 hover:underline truncate block mt-1"
                       >
-                        {banner.link}
+                        Product: {banner.productUrl}
                       </a>
                     ) : (
-                      <p className="text-xs text-gray-400 mt-1">No link</p>
+                      <p className="text-xs text-gray-400 mt-1">No product URL</p>
                     )}
                     <span
                       className={`inline-block mt-2 px-2 py-1 rounded-full text-xs font-medium ${
@@ -722,6 +725,19 @@ const Banners = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t('banners.endDate')}</label>
                   <p className="text-gray-900">{new Date(viewingBanner.endDate).toLocaleString()}</p>
+                </div>
+              )}
+              {viewingBanner.productUrl && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product URL</label>
+                  <a
+                    href={viewingBanner.productUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline break-all"
+                  >
+                    {viewingBanner.productUrl}
+                  </a>
                 </div>
               )}
               <div>
