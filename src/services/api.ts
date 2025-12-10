@@ -369,15 +369,14 @@ class ApiService {
   }
 
   /**
-   * Create notification
+   * Create/send notification via FCM (expects deviceTokens array)
    */
   async createNotification(data: {
-    title: string;
-    message: string;
-    type?: 'website' | 'mobile' | 'both';
-    target?: 'all' | 'specific';
-    targetIds?: string[];
-    company?: string;
+    titleText: string;
+    bodyText: string;
+    deviceTokens: string[];
+    imageUrl?: string;
+    clickAction?: string;
   }): Promise<ApiResponse<any>> {
     return this.request('/notifications', {
       method: 'POST',
@@ -593,6 +592,36 @@ class ApiService {
     return this.request(`/super-admins/${id}/password`, {
       method: 'PUT',
       body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  }
+
+  /**
+   * Send OTP for password change
+   */
+  async sendOTPForPasswordChange(email: string): Promise<ApiResponse<any>> {
+    return this.request('/check-email', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  /**
+   * Verify OTP for password change
+   */
+  async verifyOTPForPasswordChange(email: string, otp: string): Promise<ApiResponse<any>> {
+    return this.request('/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
+  }
+
+  /**
+   * Change password with OTP
+   */
+  async changePasswordWithOTP(email: string, newPassword: string): Promise<ApiResponse<any>> {
+    return this.request('/change-password', {
+      method: 'PUT',
+      body: JSON.stringify({ email, newPassword }),
     });
   }
 

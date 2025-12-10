@@ -23,6 +23,7 @@
     "transactions": "Transacciones",
     "notifications": "Notificaciones",
     "banners": "Banners",
+    "changePassword": "Cambiar Contraseña",
     "settings": "Configuración",
     "logout": "Cerrar Sesión"
   },
@@ -73,14 +74,25 @@
     "titleField": "Título",
     "message": "Mensaje",
     "target": "Objetivo",
+    "targetCustomers": "Clientes Objetivo",
+    "allCustomers": "Todos los Clientes",
+    "selectCustomers": "Seleccionar Clientes",
     "website": "Sitio Web",
     "mobile": "Móvil",
     "both": "Ambos",
     "send": "Enviar",
+    "sendNotificationsDescription": "Enviar notificaciones a tus clientes",
     "delete": "Eliminar",
     "deleteNotification": "Eliminar Notificación",
     "deleteConfirm": "¿Estás seguro de que quieres eliminar esta notificación?",
-    "deleteWarning": "Esta acción no se puede deshacer."
+    "deleteWarning": "Esta acción no se puede deshacer.",
+    "filterByName": "Filtrar por nombre...",
+    "filterByEmail": "Filtrar por correo electrónico...",
+    "filterByPhone": "Filtrar por teléfono...",
+    "filterByCountry": "Filtrar por país...",
+    "noCustomersFound": "No se encontraron clientes que coincidan con sus filtros",
+    "selectAtLeastOneCustomer": "Por favor seleccione al menos un cliente",
+    "selectAllCustomers": "Seleccionar Todos los Clientes"
   },
   "transactions": {
     "title": "Transacciones",
@@ -120,6 +132,30 @@
     "submittedAt": "Enviado el",
     "reply": "Responder por Correo"
   },
+  "changePassword": {
+    "checkEmail": "Verificar Correo",
+    "checkEmailDescription": "Ingrese su correo electrónico para recibir un código OTP",
+    "sendOTP": "Enviar OTP",
+    "verifyOTP": "Verificar OTP",
+    "verifyOTPDescription": "Ingrese el código OTP enviado a su correo electrónico",
+    "otpCode": "Código OTP",
+    "otpSentTo": "OTP enviado a",
+    "verify": "Verificar",
+    "backToEmail": "Volver al Correo",
+    "changePassword": "Cambiar Contraseña",
+    "changePasswordDescription": "Ingrese su nueva contraseña",
+    "newPassword": "Nueva Contraseña",
+    "confirmPassword": "Confirmar Nueva Contraseña",
+    "enterNewPassword": "Ingrese nueva contraseña",
+    "confirmNewPassword": "Confirme nueva contraseña",
+    "updatePassword": "Actualizar Contraseña",
+    "backToOTP": "Volver a OTP",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "passwordMismatch": "La nueva contraseña y la confirmación no coinciden",
+    "passwordUpdated": "¡Contraseña Actualizada!",
+    "passwordUpdatedMessage": "Su contraseña ha sido actualizada exitosamente. Será redirigido al panel en breve.",
+    "passwordUpdateError": "Error al actualizar la contraseña. Por favor intente nuevamente."
+  },
   "common": {
     "save": "Guardar",
     "saving": "Guardando...",
@@ -134,7 +170,8 @@
     "success": "Éxito",
     "error": "Error",
     "close": "Cerrar",
-    "deleting": "Eliminando..."
+    "deleting": "Eliminando...",
+    "sending": "Enviando..."
   }
 }
 

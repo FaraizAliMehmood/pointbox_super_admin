@@ -26,6 +26,7 @@
     "newsletterImages": "صور النشرة الإخبارية",
     "newsletterEmails": "بريد النشرة الإخبارية",
     "faqs": "الأسئلة الشائعة",
+    "changePassword": "تغيير كلمة المرور",
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج"
   },
@@ -71,14 +72,25 @@
     "titleField": "العنوان",
     "message": "الرسالة",
     "target": "الهدف",
+    "targetCustomers": "العملاء المستهدفون",
+    "allCustomers": "جميع العملاء",
+    "selectCustomers": "اختر العملاء",
     "website": "الموقع",
     "mobile": "الجوال",
     "both": "كلاهما",
     "send": "إرسال",
+    "sendNotificationsDescription": "إرسال إشعارات إلى عملائك",
     "delete": "حذف",
     "deleteNotification": "حذف الإشعار",
     "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا الإشعار؟",
-    "deleteWarning": "لا يمكن التراجع عن هذا الإجراء."
+    "deleteWarning": "لا يمكن التراجع عن هذا الإجراء.",
+    "filterByName": "تصفية بالاسم...",
+    "filterByEmail": "تصفية بالبريد الإلكتروني...",
+    "filterByPhone": "تصفية بالهاتف...",
+    "filterByCountry": "تصفية بالدولة...",
+    "noCustomersFound": "لم يتم العثور على عملاء يطابقون الفلاتر الخاصة بك",
+    "selectAtLeastOneCustomer": "يرجى اختيار عميل واحد على الأقل",
+    "selectAllCustomers": "تحديد جميع العملاء"
   },
   "transactions": {
     "title": "المعاملات",
@@ -208,6 +220,30 @@
     "passwordUpdated": "تم تحديث كلمة المرور بنجاح",
     "passwordUpdateError": "فشل تحديث كلمة المرور. يرجى التحقق من كلمة المرور الحالية."
   },
+  "changePassword": {
+    "checkEmail": "التحقق من البريد الإلكتروني",
+    "checkEmailDescription": "أدخل بريدك الإلكتروني لتلقي رمز OTP",
+    "sendOTP": "إرسال رمز OTP",
+    "verifyOTP": "التحقق من رمز OTP",
+    "verifyOTPDescription": "أدخل رمز OTP المرسل إلى بريدك الإلكتروني",
+    "otpCode": "رمز OTP",
+    "otpSentTo": "تم إرسال رمز OTP إلى",
+    "verify": "التحقق",
+    "backToEmail": "العودة إلى البريد الإلكتروني",
+    "changePassword": "تغيير كلمة المرور",
+    "changePasswordDescription": "أدخل كلمة المرور الجديدة",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "enterNewPassword": "أدخل كلمة المرور الجديدة",
+    "confirmNewPassword": "أكد كلمة المرور الجديدة",
+    "updatePassword": "تحديث كلمة المرور",
+    "backToOTP": "العودة إلى رمز OTP",
+    "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "passwordMismatch": "كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقين",
+    "passwordUpdated": "تم تحديث كلمة المرور!",
+    "passwordUpdatedMessage": "تم تحديث كلمة المرور بنجاح. سيتم إعادة توجيهك إلى لوحة التحكم قريباً.",
+    "passwordUpdateError": "فشل تحديث كلمة المرور. يرجى المحاولة مرة أخرى."
+  },
   "common": {
     "save": "حفظ",
     "saving": "جاري الحفظ...",
@@ -222,7 +258,8 @@
     "success": "نجح",
     "error": "خطأ",
     "close": "إغلاق",
-    "deleting": "جاري الحذف..."
+    "deleting": "جاري الحذف...",
+    "sending": "جاري الإرسال..."
   }
 }
 

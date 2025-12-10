@@ -23,6 +23,7 @@
     "transactions": "Transactions",
     "notifications": "Notifications",
     "banners": "Bannières",
+    "changePassword": "Changer le Mot de Passe",
     "settings": "Paramètres",
     "logout": "Déconnexion"
   },
@@ -73,14 +74,25 @@
     "titleField": "Titre",
     "message": "Message",
     "target": "Cible",
+    "targetCustomers": "Clients Cibles",
+    "allCustomers": "Tous les Clients",
+    "selectCustomers": "Sélectionner les Clients",
     "website": "Site Web",
     "mobile": "Mobile",
     "both": "Les Deux",
     "send": "Envoyer",
+    "sendNotificationsDescription": "Envoyer des notifications à vos clients",
     "delete": "Supprimer",
     "deleteNotification": "Supprimer la Notification",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette notification?",
-    "deleteWarning": "Cette action ne peut pas être annulée."
+    "deleteWarning": "Cette action ne peut pas être annulée.",
+    "filterByName": "Filtrer par nom...",
+    "filterByEmail": "Filtrer par email...",
+    "filterByPhone": "Filtrer par téléphone...",
+    "filterByCountry": "Filtrer par pays...",
+    "noCustomersFound": "Aucun client trouvé correspondant à vos filtres",
+    "selectAtLeastOneCustomer": "Veuillez sélectionner au moins un client",
+    "selectAllCustomers": "Sélectionner Tous les Clients"
   },
   "transactions": {
     "title": "Transactions",
@@ -120,6 +132,30 @@
     "submittedAt": "Soumis le",
     "reply": "Répondre par E-mail"
   },
+  "changePassword": {
+    "checkEmail": "Vérifier l'Email",
+    "checkEmailDescription": "Entrez votre adresse e-mail pour recevoir un code OTP",
+    "sendOTP": "Envoyer OTP",
+    "verifyOTP": "Vérifier l'OTP",
+    "verifyOTPDescription": "Entrez le code OTP envoyé à votre adresse e-mail",
+    "otpCode": "Code OTP",
+    "otpSentTo": "OTP envoyé à",
+    "verify": "Vérifier",
+    "backToEmail": "Retour à l'Email",
+    "changePassword": "Changer le Mot de Passe",
+    "changePasswordDescription": "Entrez votre nouveau mot de passe",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmPassword": "Confirmer le Nouveau Mot de Passe",
+    "enterNewPassword": "Entrez le nouveau mot de passe",
+    "confirmNewPassword": "Confirmez le nouveau mot de passe",
+    "updatePassword": "Mettre à Jour le Mot de Passe",
+    "backToOTP": "Retour à l'OTP",
+    "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+    "passwordMismatch": "Le nouveau mot de passe et la confirmation ne correspondent pas",
+    "passwordUpdated": "Mot de Passe Mis à Jour!",
+    "passwordUpdatedMessage": "Votre mot de passe a été mis à jour avec succès. Vous serez redirigé vers le tableau de bord sous peu.",
+    "passwordUpdateError": "Échec de la mise à jour du mot de passe. Veuillez réessayer."
+  },
   "common": {
     "save": "Enregistrer",
     "saving": "Enregistrement...",
@@ -134,7 +170,8 @@
     "success": "Succès",
     "error": "Erreur",
     "close": "Fermer",
-    "deleting": "Suppression..."
+    "deleting": "Suppression...",
+    "sending": "Envoi..."
   }
 }
 

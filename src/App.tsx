@@ -19,6 +19,7 @@ import NewsletterEmails from './pages/NewsletterEmails';
 import ContactUs from './pages/ContactUs';
 import FAQs from './pages/FAQs';
 import Settings from './pages/Settings';
+import ChangePassword from './pages/ChangePassword';
 import './i18n';
 
 function App() {
@@ -138,6 +139,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FAQs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                <ProtectedRoute>
+                  <ChangePassword />
                 </ProtectedRoute>
               }
             />

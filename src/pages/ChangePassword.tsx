@@ -1,51 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, KeyRound, CheckCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, KeyRound, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import apiService from '../services/api';
 
-type Mode = 'login' | 'checkEmail' | 'verifyOTP' | 'changePassword';
+type Step = 'email' | 'otp' | 'password';
 
-const Login = () => {
-  const [mode, setMode] = useState<Mode>('login');
+const ChangePassword = () => {
+  const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
-  // Change password flow states
-  const [changePasswordEmail, setChangePasswordEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const result = await login(email, password);
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.error || 'Invalid email or password');
-      }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+  // Pre-fill email if user is logged in
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email);
     }
-  };
+  }, [user]);
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,9 +35,10 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await apiService.sendOTPForPasswordChange(changePasswordEmail);
+      const response = await apiService.sendOTPForPasswordChange(email);
+      console.log(response);
       if (response.success) {
-        setMode('verifyOTP');
+        setStep('otp');
       } else {
         setError(response.message || 'Failed to send OTP. Please try again.');
       }
@@ -72,9 +55,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await apiService.verifyOTPForPasswordChange(changePasswordEmail, otp);
+      const response = await apiService.verifyOTPForPasswordChange(email, otp);
       if (response.success) {
-        setMode('changePassword');
+        setStep('password');
       } else {
         setError(response.message || 'Invalid OTP. Please try again.');
       }
@@ -102,16 +85,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await apiService.changePasswordWithOTP(changePasswordEmail, newPassword);
+      const response = await apiService.changePasswordWithOTP(email, newPassword);
       if (response.success) {
         setSuccess(true);
         setTimeout(() => {
-          setMode('login');
-          setSuccess(false);
-          setChangePasswordEmail('');
-          setOtp('');
-          setNewPassword('');
-          setConfirmPassword('');
+          navigate('/dashboard');
         }, 3000);
       } else {
         setError(response.message || t('changePassword.passwordUpdateError'));
@@ -125,7 +103,7 @@ const Login = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 flex items-center justify-center p-4">
+      <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
@@ -142,87 +120,11 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 flex items-center justify-center p-4">
+    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
-          {/* Login Form */}
-          {mode === 'login' && (
-            <>
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">PointBox</h1>
-                <h2 className="text-xl text-gray-600">{t('auth.loginTitle')}</h2>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                    {error}
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('auth.email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
-                    placeholder="admin@pointbox.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('auth.password')}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
-                      placeholder="••••••••"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? t('common.loading') : t('auth.login')}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('checkEmail');
-                    setError('');
-                    setChangePasswordEmail('');
-                  }}
-                  className="w-full text-purple-600 font-semibold hover:text-purple-700 transition-colors text-sm"
-                >
-                  {t('auth.forgotPassword')}
-                </button>
-              </form>
-            </>
-          )}
-
           {/* Step 1: Check Email */}
-          {mode === 'checkEmail' && (
+          {step === 'email' && (
             <>
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 rounded-full mb-4">
@@ -245,8 +147,8 @@ const Login = () => {
                   </label>
                   <input
                     type="email"
-                    value={changePasswordEmail}
-                    onChange={(e) => setChangePasswordEmail(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
                     placeholder="admin@pointbox.com"
@@ -260,24 +162,12 @@ const Login = () => {
                 >
                   {loading ? t('common.loading') : t('changePassword.sendOTP')}
                 </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('login');
-                    setChangePasswordEmail('');
-                    setError('');
-                  }}
-                  className="w-full text-purple-600 font-semibold hover:text-purple-700 transition-colors"
-                >
-                  {t('auth.login')}
-                </button>
               </form>
             </>
           )}
 
           {/* Step 2: Verify OTP */}
-          {mode === 'verifyOTP' && (
+          {step === 'otp' && (
             <>
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 rounded-full mb-4">
@@ -305,9 +195,9 @@ const Login = () => {
                     required
                     maxLength={4}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-center text-2xl tracking-widest"
-                    placeholder="0000"
+                    placeholder="000000"
                   />
-                  <p className="text-sm text-gray-500 mt-2">{t('changePassword.otpSentTo')} {changePasswordEmail}</p>
+                  <p className="text-sm text-gray-500 mt-2">{t('changePassword.otpSentTo')} {email}</p>
                 </div>
 
                 <button
@@ -321,7 +211,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setMode('checkEmail');
+                    setStep('email');
                     setOtp('');
                     setError('');
                   }}
@@ -334,7 +224,7 @@ const Login = () => {
           )}
 
           {/* Step 3: Change Password */}
-          {mode === 'changePassword' && (
+          {step === 'password' && (
             <>
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 rounded-full mb-4">
@@ -357,7 +247,7 @@ const Login = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type={showNewPassword ? 'text' : 'password'}
+                      type={showPassword ? 'text' : 'password'}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
@@ -367,11 +257,11 @@ const Login = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                      aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
-                      {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
@@ -412,7 +302,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setMode('verifyOTP');
+                    setStep('otp');
                     setNewPassword('');
                     setConfirmPassword('');
                     setError('');
@@ -429,5 +319,5 @@ const Login = () => {
     </div>
   );
 };
-export default Login;
 
+export default ChangePassword;

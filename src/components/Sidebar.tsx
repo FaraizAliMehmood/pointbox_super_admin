@@ -9,14 +9,15 @@ import {
   CreditCard, 
   Bell, 
   Image, 
-  Settings, 
+  Settings,
   LogOut,
   Menu,
   X,
   Newspaper,
   HelpCircle,
   MailCheck,
-  MessageSquare
+  MessageSquare,
+  Key
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -43,6 +44,7 @@ const Sidebar = () => {
     { path: '/newsletter-images', icon: Newspaper, label: t('sidebar.newsletterImages') },
     { path: '/newsletter-emails', icon: MailCheck, label: t('sidebar.newsletterEmails') },
     { path: '/faqs', icon: HelpCircle, label: t('sidebar.faqs') },
+    { path: '/change-password', icon: Key, label: t('sidebar.changePassword') },
     { path: '/settings', icon: Settings, label: t('sidebar.settings') },
   ];
 
