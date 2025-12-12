@@ -47,6 +47,7 @@ const Customers = () => {
           country: cust.country || '',
           googleSignUp: cust.isGoogleSignup || cust.googleSignUp || false,
           createdAt: cust.createdAt || new Date().toISOString(),
+          deviceToken: cust.deviceToken || cust.device_token || '',
         }));
         setCustomers(mappedCustomers);
       }
