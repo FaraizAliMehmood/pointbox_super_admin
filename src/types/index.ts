@@ -47,11 +47,7 @@ export interface Customer {
   country: string;
   googleSignUp: boolean;
   createdAt: string;
-  fcmTokens?: Array<{
-    token: string;
-    deviceType: 'mobile' | 'web';
-    updatedAt: string;
-  }>;
+  deviceToken: string;
 }
 
 export interface CustomerQuery {

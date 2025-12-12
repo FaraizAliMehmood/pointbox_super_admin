@@ -31,20 +31,35 @@ const Notifications = () => {
   const loadCustomers = async () => {
     try {
       const response = await apiService.getCustomers();
+      
+      // Handle different response structures
+      let customersData: any[] = [];
+      
       if (response.success && response.data) {
-        const mappedCustomers: Customer[] = response.data.map((cust: any) => ({
-          id: cust._id || cust.id,
-          username: cust.username,
-          email: cust.email,
-          phoneNumber: cust.phone || cust.phoneNumber || '',
+        customersData = Array.isArray(response.data) ? response.data : [];
+      } else if (Array.isArray(response)) {
+        // If response is directly an array
+        customersData = response;
+      } else if (response.data && Array.isArray(response.data)) {
+        customersData = response.data;
+      }
+      
+      // Map the API response data to Customer interface
+      const mappedCustomers: Customer[] = customersData.map((cust: any) => {
+        return {
+          id: cust._id || cust.id || cust.customerId || '',
+          username: cust.username || cust.name || '',
+          email: cust.email || '',
+          phoneNumber: cust.phone || cust.phoneNumber || cust.mobile || '',
           address: cust.address || '',
           country: cust.country || '',
           googleSignUp: cust.isGoogleSignup || cust.googleSignUp || false,
-          createdAt: cust.createdAt || new Date().toISOString(),
-          fcmTokens: cust.fcmTokens || [],
-        }));
-        setCustomers(mappedCustomers);
-      }
+          createdAt: cust.createdAt || cust.created_at || new Date().toISOString(),
+          deviceToken: cust.deviceToken,
+        };
+      });
+      
+      setCustomers(mappedCustomers);
     } catch (error) {
       console.error('Error loading customers:', error);
     }
@@ -110,11 +125,7 @@ const Notifications = () => {
     }
 
     // Collect all device tokens (web + mobile) from target customers
-    const deviceTokens = targetCustomers.flatMap((customer) =>
-      customer.fcmTokens
-        ?.filter((token: any) => token && token.token && typeof token.token === 'string')
-        .map((token: any) => token.token) || []
-    );
+    const deviceTokens = targetCustomers.map((customer)=> customer.deviceToken);
 
     console.log('Target customers:', targetCustomers.length);
     console.log('Device tokens collected:', deviceTokens.length);
@@ -127,19 +138,15 @@ const Notifications = () => {
 
     setSendingNotification(true);
 
+    const finalToken = deviceTokens.filter(token => token && token.trim().length > 0);
+    console.log('Final tokens:', finalToken);
+
     // Payload expected by backend exports.notifications (FCM direct send)
     const notificationData = {
       titleText: formData.title,
       bodyText: formData.message,
       deviceTokens: deviceTokens.filter(token => token && token.trim().length > 0), // Remove empty tokens
     };
-
-    console.log('Sending notification data:', {
-      titleText: notificationData.titleText,
-      bodyText: notificationData.bodyText,
-      deviceTokensCount: notificationData.deviceTokens.length,
-    });
-
     try {
       const response = await apiService.createNotification(notificationData);
       console.log('Notification response:', response);
@@ -398,11 +405,9 @@ const Notifications = () => {
                                   type="checkbox"
                                   checked={selectedCustomers.some(c => c.id === customer.id)}
                                   onChange={() => {
-                                    const webTokens = customer.fcmTokens?.filter((token: any) => token.deviceType === 'web').map((token: any) => token.token) || [];
-                                    const mobileTokens = customer.fcmTokens?.filter((token: any) => token.deviceType === 'mobile').map((token: any) => token.token) || [];
+                                    const webTokens = customer.deviceToken;
                                     console.log('Customer:', customer.username || customer.email);
                                     console.log('Web FCM Tokens:', webTokens);
-                                    console.log('Mobile FCM Tokens:', mobileTokens);
                                     handleToggleCustomer(customer);
                                   }}
                                   className="w-4 h-4 text-purple-600 focus:ring-purple-500 rounded"
