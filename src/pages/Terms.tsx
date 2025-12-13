@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Eye, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import type { Terms } from '../types';
+import type { Terms as TermsType } from '../types';
 import apiService from '../services/api';
 
 const Terms = () => {
   const { t } = useLanguage();
-  const [terms, setTerms] = useState<Terms[]>([]);
+  const [terms, setTerms] = useState<TermsType[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editingTerms, setEditingTerms] = useState<Terms | null>(null);
-  const [viewingTerms, setViewingTerms] = useState<Terms | null>(null);
-  const [termsToDelete, setTermsToDelete] = useState<Terms | null>(null);
+  const [editingTerms, setEditingTerms] = useState<TermsType | null>(null);
+  const [viewingTerms, setViewingTerms] = useState<TermsType | null>(null);
+  const [termsToDelete, setTermsToDelete] = useState<TermsType | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -105,12 +105,12 @@ const Terms = () => {
     }
   };
 
-  const handleView = (term: Terms) => {
+  const handleView = (term: TermsType) => {
     setViewingTerms(term);
     setShowViewModal(true);
   };
 
-  const handleEdit = (term: Terms) => {
+  const handleEdit = (term: TermsType) => {
     setEditingTerms(term);
     setFormData({
       title: term.title,
@@ -121,7 +121,7 @@ const Terms = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (term: Terms) => {
+  const handleDelete = (term: TermsType) => {
     setTermsToDelete(term);
     setShowDeleteModal(true);
   };
