@@ -18,6 +18,8 @@ import NewsletterImages from './pages/NewsletterImages';
 import NewsletterEmails from './pages/NewsletterEmails';
 import ContactUs from './pages/ContactUs';
 import FAQs from './pages/FAQs';
+import Terms from './pages/Terms';
+import SEO from './pages/SEO';
 import Settings from './pages/Settings';
 import ChangePassword from './pages/ChangePassword';
 import './i18n';
@@ -139,6 +141,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FAQs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <ProtectedRoute>
+                  <Terms />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seo"
+              element={
+                <ProtectedRoute>
+                  <SEO />
                 </ProtectedRoute>
               }
             />

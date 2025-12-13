@@ -17,7 +17,9 @@ import {
   HelpCircle,
   MailCheck,
   MessageSquare,
-  Key
+  Key,
+  FileText,
+  Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -44,6 +46,8 @@ const Sidebar = () => {
     { path: '/newsletter-images', icon: Newspaper, label: t('sidebar.newsletterImages') },
     { path: '/newsletter-emails', icon: MailCheck, label: t('sidebar.newsletterEmails') },
     { path: '/faqs', icon: HelpCircle, label: t('sidebar.faqs') },
+    { path: '/terms', icon: FileText, label: t('sidebar.terms') },
+    { path: '/seo', icon: Search, label: t('sidebar.seo') },
     { path: '/change-password', icon: Key, label: t('sidebar.changePassword') },
     { path: '/settings', icon: Settings, label: t('sidebar.settings') },
   ];

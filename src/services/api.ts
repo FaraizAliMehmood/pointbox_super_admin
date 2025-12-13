@@ -3,8 +3,8 @@
  * Handles all API calls to the backend
  */
 //
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/superadmin';
-const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/settings';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/superadmin';
+const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/settings';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -482,6 +482,54 @@ class ApiService {
     });
   }
 
+  // ==================== Terms and Conditions ====================
+
+  /**
+   * Get all Terms and Conditions
+   */
+  async getTerms(): Promise<ApiResponse<any[]>> {
+    return this.request('/terms');
+  }
+
+  /**
+   * Create Terms and Conditions
+   */
+  async createTerms(data: {
+    title: string;
+    content: string;
+    section?: string;
+    isActive?: boolean;
+  }): Promise<ApiResponse<any>> {
+    return this.request('/terms', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Update Terms and Conditions
+   */
+  async updateTerms(id: string, data: Partial<{
+    title: string;
+    content: string;
+    section: string;
+    isActive: boolean;
+  }>): Promise<ApiResponse<any>> {
+    return this.request(`/terms/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Delete Terms and Conditions
+   */
+  async deleteTerms(id: string): Promise<ApiResponse<void>> {
+    return this.request(`/terms/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // ==================== Newsletters ====================
 
   /**
@@ -743,6 +791,117 @@ class ApiService {
     }
 
     return responseData;
+  }
+
+  // ==================== SEO ====================
+
+  /**
+   * Get SEO settings
+   */
+  async getSEO(): Promise<ApiResponse<any>> {
+    const url = `${SETTINGS_API_BASE_URL}/seo`;
+    const token = this.getToken();
+    const headers: HeadersInit = {
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.message || `HTTP error! status: ${response.status}`;
+      const error = new Error(errorMessage);
+      (error as any).response = data;
+      throw error;
+    }
+
+    return data;
+  }
+
+  /**
+   * Update SEO settings
+   */
+  async updateSEO(data: {
+    metaTitle?: string;
+    metaDescription?: string;
+    metaKeywords?: string;
+    canonicalUrl?: string;
+    robotsMeta?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+    ogImage?: string;
+    ogUrl?: string;
+    ogType?: string;
+    ogSiteName?: string;
+    twitterCard?: string;
+    twitterTitle?: string;
+    twitterDescription?: string;
+    twitterImage?: string;
+    twitterSite?: string;
+    twitterCreator?: string;
+    structuredData?: string;
+    favicon?: string;
+    sitemapUrl?: string;
+  }): Promise<ApiResponse<any>> {
+    const url = `${SETTINGS_API_BASE_URL}/seo`;
+    const token = this.getToken();
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = responseData.message || `HTTP error! status: ${response.status}`;
+      const error = new Error(errorMessage);
+      (error as any).response = responseData;
+      throw error;
+    }
+
+    return responseData;
+  }
+
+  /**
+   * Upload SEO image (OG image, Twitter image, or favicon)
+   */
+  async uploadSEOImage(type: 'ogImage' | 'twitterImage' | 'favicon', file: File): Promise<ApiResponse<any>> {
+    const url = `${SETTINGS_API_BASE_URL}/seo/image`;
+    const token = this.getToken();
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('type', type);
+
+    const headers: HeadersInit = {
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.message || `HTTP error! status: ${response.status}`;
+      const error = new Error(errorMessage);
+      (error as any).response = data;
+      throw error;
+    }
+
+    return data;
   }
 }
 

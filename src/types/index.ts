@@ -135,3 +135,35 @@ export interface Contact {
   createdAt: string;
 }
 
+export interface Terms {
+  id: string;
+  title: string;
+  content: string;
+  section: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface SEO {
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  canonicalUrl: string;
+  robotsMeta: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: string;
+  ogUrl: string;
+  ogType: string;
+  ogSiteName: string;
+  twitterCard: string;
+  twitterTitle: string;
+  twitterDescription: string;
+  twitterImage: string;
+  twitterSite: string;
+  twitterCreator: string;
+  structuredData: string;
+  favicon: string;
+  sitemapUrl: string;
+}
+
