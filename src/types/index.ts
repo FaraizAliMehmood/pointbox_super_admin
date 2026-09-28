@@ -105,6 +105,7 @@ export interface WhatsNewItem {
   description: string;
   imageUrl: string;
   productUrl?: string;
+  language?: 'en' | 'ar';
   order: number;
   isActive: boolean;
   createdAt: string;

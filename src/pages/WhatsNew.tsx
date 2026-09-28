@@ -9,6 +9,7 @@ const emptyForm = {
   description: '',
   imageUrl: '',
   productUrl: '',
+  language: 'en' as 'en' | 'ar',
   order: '0',
   isActive: true,
 };
@@ -45,6 +46,7 @@ const WhatsNew = () => {
           description: w.description || '',
           imageUrl: w.imageUrl,
           productUrl: w.productUrl || '',
+          language: w.language || 'en',
           order: w.order || 0,
           isActive: w.isActive !== false,
           createdAt: w.createdAt || new Date().toISOString(),
@@ -102,6 +104,7 @@ const WhatsNew = () => {
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description);
         formDataToSend.append('productUrl', formData.productUrl);
+        formDataToSend.append('language', formData.language);
         formDataToSend.append('order', formData.order);
         formDataToSend.append('isActive', formData.isActive.toString());
 
@@ -128,6 +131,7 @@ const WhatsNew = () => {
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description);
         formDataToSend.append('productUrl', formData.productUrl);
+        formDataToSend.append('language', formData.language);
         formDataToSend.append('order', formData.order);
 
         const response = await apiService.uploadWhatsNew(formDataToSend);
@@ -157,6 +161,7 @@ const WhatsNew = () => {
       description: item.description,
       imageUrl: item.imageUrl,
       productUrl: item.productUrl || '',
+      language: item.language || 'en',
       order: String(item.order ?? 0),
       isActive: item.isActive,
     });
@@ -427,6 +432,17 @@ const WhatsNew = () => {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('whatsNew.language')}</label>
+                <select
+                  value={formData.language}
+                  onChange={(e) => setFormData({ ...formData, language: e.target.value as 'en' | 'ar' })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                >
+                  <option value="en">{t('whatsNew.english')}</option>
+                  <option value="ar">{t('whatsNew.arabic')}</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
                 <input
                   type="number"
@@ -593,6 +609,10 @@ const WhatsNew = () => {
                   </a>
                 </div>
               )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('whatsNew.language')}</label>
+                <p className="text-gray-900">{viewingItem.language === 'ar' ? t('whatsNew.arabic') : t('whatsNew.english')}</p>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
                 <p className="text-gray-900">{viewingItem.order}</p>
