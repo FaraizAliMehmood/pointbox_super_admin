@@ -444,6 +444,47 @@ class ApiService {
     });
   }
 
+  // ==================== What's New ====================
+
+  /**
+   * Get all What's New items
+   */
+  async getWhatsNews(): Promise<ApiResponse<any[]>> {
+    return this.request('/whats-new');
+  }
+
+  /**
+   * Upload What's New item with image file
+   */
+  async uploadWhatsNew(formData: FormData): Promise<ApiResponse<any>> {
+    return this.request('/whats-new', {
+      method: 'POST',
+      body: formData,
+    });
+  }
+
+  /**
+   * Update What's New item (optionally with image file)
+   */
+  async updateWhatsNew(
+    id: string,
+    formData: FormData
+  ): Promise<ApiResponse<any>> {
+    return this.request(`/whats-new/${id}`, {
+      method: 'PUT',
+      body: formData,
+    });
+  }
+
+  /**
+   * Delete What's New item
+   */
+  async deleteWhatsNew(id: string): Promise<ApiResponse<void>> {
+    return this.request(`/whats-new/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // ==================== FAQs ====================
 
   /**

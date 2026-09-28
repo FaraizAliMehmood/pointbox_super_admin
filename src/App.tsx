@@ -14,6 +14,7 @@ import Queries from './pages/Queries';
 import Transactions from './pages/Transactions';
 import Notifications from './pages/Notifications';
 import Banners from './pages/Banners';
+import WhatsNew from './pages/WhatsNew';
 import NewsletterImages from './pages/NewsletterImages';
 import NewsletterEmails from './pages/NewsletterEmails';
 import ContactUs from './pages/ContactUs';
@@ -110,6 +111,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Banners />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/whats-new"
+              element={
+                <ProtectedRoute>
+                  <WhatsNew />
                 </ProtectedRoute>
               }
             />

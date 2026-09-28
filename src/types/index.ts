@@ -99,6 +99,17 @@ export interface Banner {
   createdAt: string;
 }
 
+export interface WhatsNewItem {
+  id: string;
+  title?: string;
+  description: string;
+  imageUrl: string;
+  productUrl?: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface NewsletterImage {
   id: string;
   title: string;
