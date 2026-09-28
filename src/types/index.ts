@@ -36,6 +36,7 @@ export interface Company {
   employeeCount?: number;
   createdAt: string;
   isActive: boolean;
+  aiApiEnabled: boolean;
 }
 
 export interface Customer {
@@ -92,6 +93,7 @@ export interface Banner {
   productUrl?: string;
   isActive: boolean;
   type: 'regular' | 'special_event';
+  language?: 'en' | 'ar';
   startDate?: string;
   endDate?: string;
   createdAt: string;
@@ -142,6 +144,17 @@ export interface Terms {
   section: string;
   isActive: boolean;
   createdAt: string;
+}
+
+export interface AiApiKey {
+  id: string;
+  provider: 'openai' | 'anthropic' | 'gemini' | 'stability' | 'elevenlabs' | 'other';
+  label: string;
+  apiKey?: string;
+  apiKeyPreview: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SEO {

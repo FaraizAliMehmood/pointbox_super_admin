@@ -26,6 +26,7 @@
     "faqs": "Questions Fréquentes",
     "terms": "Termes et Conditions",
     "seo": "Paramètres SEO",
+    "aiApiKeys": "Clés API IA",
     "changePassword": "Changer le Mot de Passe",
     "settings": "Paramètres",
     "logout": "Déconnexion"
@@ -236,6 +237,28 @@
     "structuredData": "Données Structurées",
     "settingsSaved": "Paramètres SEO enregistrés avec succès !",
     "imageUploaded": "Image téléchargée avec succès !"
+  },
+  "aiApiKeys": {
+    "title": "Clés API IA",
+    "createKey": "Ajouter une Clé API",
+    "editKey": "Modifier la Clé API",
+    "keyDetails": "Détails de la Clé API",
+    "provider": "Fournisseur",
+    "label": "Étiquette",
+    "labelPlaceholder": "Entrez un nom pour cette clé",
+    "apiKey": "Clé API",
+    "apiKeyPlaceholder": "Entrez la clé API",
+    "leaveBlankToKeep": "laisser vide pour conserver la clé actuelle",
+    "reveal": "Révéler",
+    "revealed": "Révélée",
+    "status": "Statut",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "toggleStatus": "Changer le Statut",
+    "isActive": "Actif",
+    "actions": "Actions",
+    "deleteKey": "Supprimer la Clé API",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette clé API ?"
   }
 }
 

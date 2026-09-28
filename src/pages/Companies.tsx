@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, Edit, Trash2, X, Eye, EyeOff, Upload, Image as ImageIcon, MapPin, Globe, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Eye, EyeOff, Upload, Image as ImageIcon, MapPin, Globe, Loader2, CheckCircle, XCircle, Bot } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import type { Company } from '../types';
 import apiService from '../services/api';
@@ -27,7 +27,8 @@ const Companies = () => {
     email: '',
     password: '',
     employeeCount: '',
-    isActive: true
+    isActive: true,
+    aiApiEnabled: false
   });
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [uploadedLogoFile, setUploadedLogoFile] = useState<File | null>(null);
@@ -35,6 +36,7 @@ const Companies = () => {
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState<string | null>(null);
+  const [togglingAiAccess, setTogglingAiAccess] = useState<string | null>(null);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
 
   // List of countries
@@ -65,6 +67,7 @@ const Companies = () => {
           employeeCount: comp.employeeCount,
           createdAt: comp.createdAt || new Date().toISOString(),
           isActive: comp.isActive !== false,
+          aiApiEnabled: comp.aiApiEnabled === true,
         }));
         setCompanies(mappedCompanies);
       }
@@ -117,7 +120,8 @@ const Companies = () => {
         formDataToSend.append('employeeCount', formData.employeeCount);
       }
       formDataToSend.append('isActive', formData.isActive.toString());
-      
+      formDataToSend.append('aiApiEnabled', formData.aiApiEnabled.toString());
+
       // Append logo file if uploaded
       if (uploadedLogoFile) {
         formDataToSend.append('logo', uploadedLogoFile);
@@ -135,7 +139,7 @@ const Companies = () => {
           await loadCompanies();
           setShowModal(false);
           setEditingCompany(null);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true, aiApiEnabled: false });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -154,7 +158,7 @@ const Companies = () => {
         if (response.success) {
           await loadCompanies();
           setShowModal(false);
-          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true });
+          setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '', phone: '', email: '', password: '', employeeCount: '', isActive: true, aiApiEnabled: false });
           setLogoPreview('');
           setUploadedLogoFile(null);
           setShowPassword(false);
@@ -191,7 +195,8 @@ const Companies = () => {
       email: company.email || '',
       password: '',
       employeeCount: company.employeeCount?.toString() || '',
-      isActive: company.isActive !== false
+      isActive: company.isActive !== false,
+      aiApiEnabled: company.aiApiEnabled === true
     });
     setLogoPreview(company.logo || '');
     setUploadedLogoFile(null);
@@ -244,6 +249,25 @@ const Companies = () => {
     }
   };
 
+  const toggleAiAccess = async (id: string) => {
+    try {
+      setTogglingAiAccess(id);
+      const company = companies.find(comp => comp.id === id);
+      if (!company) return;
+
+      const newValue = !company.aiApiEnabled;
+      const response = await apiService.toggleCompanyAiAccess(id, newValue);
+      if (response.success) {
+        await loadCompanies();
+      }
+    } catch (error) {
+      console.error('Error toggling company AI API access:', error);
+      alert('Failed to update AI API access. Please try again.');
+    } finally {
+      setTogglingAiAccess(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -262,7 +286,7 @@ const Companies = () => {
         <button
           onClick={() => {
             setEditingCompany(null);
-            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '', employeeCount: '', isActive: true });
+            setFormData({ name: '', licenseNumber: '', vatNumber: '', logo: '', address: '', country: '',phone: '', email: '', password: '', employeeCount: '', isActive: true, aiApiEnabled: false });
             setLogoPreview('');
             setUploadedLogoFile(null);
             setShowPassword(false);
@@ -288,13 +312,14 @@ const Companies = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">License Number</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">VAT Number</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">AI API</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {companies.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                     {t('common.noData')}
                   </td>
                 </tr>
@@ -315,6 +340,17 @@ const Companies = () => {
                         }`}
                       >
                         {company.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          company.aiApiEnabled
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {company.aiApiEnabled ? 'Enabled' : 'Disabled'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -358,6 +394,22 @@ const Companies = () => {
                             <CheckCircle size={16} />
                           )}
                         </button>
+                        <button
+                          onClick={() => toggleAiAccess(company.id)}
+                          disabled={togglingAiAccess === company.id}
+                          className={`px-2 py-1 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                            company.aiApiEnabled
+                              ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                          title={company.aiApiEnabled ? 'Disable AI API access' : 'Enable AI API access'}
+                        >
+                          {togglingAiAccess === company.id ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <Bot size={16} />
+                          )}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -388,15 +440,26 @@ const Companies = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      company.isActive
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {company.isActive ? 'Active' : 'Inactive'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        company.isActive
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {company.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        company.aiApiEnabled
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      AI: {company.aiApiEnabled ? 'On' : 'Off'}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleView(company)}
@@ -435,6 +498,22 @@ const Companies = () => {
                         <XCircle size={16} />
                       ) : (
                         <CheckCircle size={16} />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => toggleAiAccess(company.id)}
+                      disabled={togglingAiAccess === company.id}
+                      className={`p-1 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        company.aiApiEnabled
+                          ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      title={company.aiApiEnabled ? 'Disable AI API access' : 'Enable AI API access'}
+                    >
+                      {togglingAiAccess === company.id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Bot size={16} />
                       )}
                     </button>
                   </div>
@@ -640,6 +719,21 @@ const Companies = () => {
                 </label>
               </div>
 
+              {/* AI API Access Checkbox */}
+              <div className="flex items-center gap-3 pt-2">
+                <input
+                  type="checkbox"
+                  id="aiApiEnabled"
+                  checked={formData.aiApiEnabled}
+                  onChange={(e) => setFormData({ ...formData, aiApiEnabled: e.target.checked })}
+                  className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 cursor-pointer"
+                />
+                <label htmlFor="aiApiEnabled" className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                  <Bot size={16} className="text-purple-600" />
+                  Enable AI API access for this company
+                </label>
+              </div>
+
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
@@ -736,6 +830,14 @@ const Companies = () => {
                   viewingCompany.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                 }`}>
                   {viewingCompany.isActive ? 'Active' : 'Inactive'}
+                </span>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">AI API Access</label>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  viewingCompany.aiApiEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {viewingCompany.aiApiEnabled ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
               <div>

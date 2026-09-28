@@ -20,6 +20,7 @@ import ContactUs from './pages/ContactUs';
 import FAQs from './pages/FAQs';
 import Terms from './pages/Terms';
 import SEO from './pages/SEO';
+import AiApiKeys from './pages/AiApiKeys';
 import Settings from './pages/Settings';
 import ChangePassword from './pages/ChangePassword';
 import './i18n';
@@ -157,6 +158,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SEO />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ai-api-keys"
+              element={
+                <ProtectedRoute>
+                  <AiApiKeys />
                 </ProtectedRoute>
               }
             />

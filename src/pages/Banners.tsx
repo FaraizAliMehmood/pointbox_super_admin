@@ -24,7 +24,7 @@ const Banners = () => {
     endDate: '',
     isActive: true,
     type: 'regular' as 'regular' | 'special_event',
-   
+    language: 'en' as 'en' | 'ar',
   });
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -51,6 +51,7 @@ const Banners = () => {
           productUrl: b.productUrl || '',
           isActive: b.isActive !== false,
           type: b.type || 'regular',
+          language: b.language || 'en',
           startDate: b.startDate,
           endDate: b.endDate,
           createdAt: b.createdAt || new Date().toISOString(),
@@ -105,10 +106,11 @@ const Banners = () => {
         formDataToSend.append('description', formData.description);
         formDataToSend.append('productUrl', formData.productUrl);
         formDataToSend.append('type', formData.type);
+        formDataToSend.append('language', formData.language);
         formDataToSend.append('startDate', formData.startDate);
         formDataToSend.append('endDate', formData.endDate);
         formDataToSend.append('isActive', formData.isActive.toString());
-        
+
         // Only append file if a new one was selected
         if (uploadedFile) {
           formDataToSend.append('image', uploadedFile);
@@ -119,7 +121,7 @@ const Banners = () => {
           await loadBanners();
           setShowModal(false);
           setEditingBanner(null);
-          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', language: 'en', startDate: '', endDate: '' });
           setImagePreview('');
           setUploadedFile(null);
           if (fileInputRef.current) {
@@ -141,6 +143,7 @@ const Banners = () => {
         formDataToSend.append('description', formData.description);
         formDataToSend.append('productUrl', formData.productUrl);
         formDataToSend.append('type', formData.type);
+        formDataToSend.append('language', formData.language);
         formDataToSend.append('startDate', formData.startDate);
         formDataToSend.append('endDate', formData.endDate);
 
@@ -148,7 +151,7 @@ const Banners = () => {
         if (response.success) {
           await loadBanners();
           setShowModal(false);
-          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+          setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', language: 'en', startDate: '', endDate: '' });
           setImagePreview('');
           setUploadedFile(null);
           if (fileInputRef.current) {
@@ -179,6 +182,7 @@ const Banners = () => {
       productUrl: banner.productUrl || '',
       isActive: banner.isActive,
       type: banner.type || 'regular',
+      language: banner.language || 'en',
       startDate: banner.startDate || '',
       endDate: banner.endDate || '',
     });
@@ -235,7 +239,7 @@ const Banners = () => {
           <button
             onClick={() => {
               setEditingBanner(null);
-              setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+              setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', language: 'en', startDate: '', endDate: '' });
               setImagePreview('');
               setUploadedFile(null);
               if (fileInputRef.current) {
@@ -466,7 +470,7 @@ const Banners = () => {
                 onClick={() => {
                   setShowModal(false);
                   setEditingBanner(null);
-                  setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+                  setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', language: 'en', startDate: '', endDate: '' });
                   setImagePreview('');
                   setUploadedFile(null);
                   if (fileInputRef.current) {
@@ -518,6 +522,17 @@ const Banners = () => {
                 >
                   <option value="regular">{t('banners.regular')}</option>
                   <option value="special_event">{t('banners.specialEvent')}</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('banners.language')}</label>
+                <select
+                  value={formData.language}
+                  onChange={(e) => setFormData({ ...formData, language: e.target.value as 'en' | 'ar' })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                >
+                  <option value="en">{t('banners.english')}</option>
+                  <option value="ar">{t('banners.arabic')}</option>
                 </select>
               </div>
               <div>
@@ -640,7 +655,7 @@ const Banners = () => {
                   onClick={() => {
                     setShowModal(false);
                     setEditingBanner(null);
-                    setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', startDate: '', endDate: '' });
+                    setFormData({ badge: '', title: '', description: '', imageUrl: '', productUrl: '', isActive: true, type: 'regular', language: 'en', startDate: '', endDate: '' });
                     setImagePreview('');
                     setUploadedFile(null);
                     setSubmitting(false);
@@ -714,6 +729,10 @@ const Banners = () => {
                 }`}>
                   {viewingBanner.type === 'special_event' ? t('banners.specialEvent') : t('banners.regular')}
                 </span>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('banners.language')}</label>
+                <p className="text-gray-900">{viewingBanner.language === 'ar' ? t('banners.arabic') : t('banners.english')}</p>
               </div>
               {viewingBanner.startDate && (
                 <div>

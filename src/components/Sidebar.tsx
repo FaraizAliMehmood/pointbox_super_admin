@@ -19,7 +19,8 @@ import {
   MessageSquare,
   Key,
   FileText,
-  Search
+  Search,
+  KeyRound
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -48,6 +49,7 @@ const Sidebar = () => {
     { path: '/faqs', icon: HelpCircle, label: t('sidebar.faqs') },
     { path: '/terms', icon: FileText, label: t('sidebar.terms') },
     { path: '/seo', icon: Search, label: t('sidebar.seo') },
+    { path: '/ai-api-keys', icon: KeyRound, label: t('sidebar.aiApiKeys') },
     { path: '/change-password', icon: Key, label: t('sidebar.changePassword') },
     { path: '/settings', icon: Settings, label: t('sidebar.settings') },
   ];

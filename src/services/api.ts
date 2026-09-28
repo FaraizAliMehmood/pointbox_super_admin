@@ -3,8 +3,8 @@
  * Handles all API calls to the backend
  */
 //
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.pointbox.me/api/superadmin';
-const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.pointbox.me/api/settings';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/superadmin';
+const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/settings';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -256,6 +256,16 @@ class ApiService {
     return this.request(`/companies/${id}/status`, {
       method: 'PUT',
       body: JSON.stringify({ isActive }),
+    });
+  }
+
+  /**
+   * Toggle company AI API access (enable/disable)
+   */
+  async toggleCompanyAiAccess(id: string, aiApiEnabled: boolean): Promise<ApiResponse<any>> {
+    return this.request(`/companies/${id}/ai-access`, {
+      method: 'PUT',
+      body: JSON.stringify({ aiApiEnabled }),
     });
   }
 
@@ -670,6 +680,71 @@ class ApiService {
     return this.request('/change-password', {
       method: 'PUT',
       body: JSON.stringify({ email, newPassword }),
+    });
+  }
+
+  // ==================== AI API Keys ====================
+
+  /**
+   * Get all AI API keys (masked)
+   */
+  async getAiApiKeys(): Promise<ApiResponse<any[]>> {
+    return this.request('/ai-api-keys');
+  }
+
+  /**
+   * Get AI API key by ID (optionally reveal full decrypted key)
+   */
+  async getAiApiKeyById(id: string, reveal = false): Promise<ApiResponse<any>> {
+    const query = reveal ? '?reveal=true' : '';
+    return this.request(`/ai-api-keys/${id}${query}`);
+  }
+
+  /**
+   * Create AI API key
+   */
+  async createAiApiKey(data: {
+    provider: string;
+    label: string;
+    apiKey: string;
+    isActive?: boolean;
+  }): Promise<ApiResponse<any>> {
+    return this.request('/ai-api-keys', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Update AI API key
+   */
+  async updateAiApiKey(id: string, data: Partial<{
+    provider: string;
+    label: string;
+    apiKey: string;
+    isActive: boolean;
+  }>): Promise<ApiResponse<any>> {
+    return this.request(`/ai-api-keys/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Toggle AI API key active status
+   */
+  async toggleAiApiKeyStatus(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/ai-api-keys/${id}/status`, {
+      method: 'PUT',
+    });
+  }
+
+  /**
+   * Delete AI API key
+   */
+  async deleteAiApiKey(id: string): Promise<ApiResponse<void>> {
+    return this.request(`/ai-api-keys/${id}`, {
+      method: 'DELETE',
     });
   }
 
