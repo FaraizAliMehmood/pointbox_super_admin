@@ -242,11 +242,11 @@ const Dashboard = () => {
               />
               <YAxis />
               <Tooltip 
-                formatter={(value: any, name: string) => {
+                formatter={(value: any, name?: string | number) => {
                   if (name === 'value') return [value, t('dashboard.total') || 'Total'];
                   if (name === 'active') return [value, t('dashboard.active') || 'Active'];
                   if (name === 'inactive') return [value, t('dashboard.inactive') || 'Inactive'];
-                  return [value, name];
+                  return [value, String(name ?? '')];
                 }}
               />
               <Legend />
