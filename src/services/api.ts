@@ -3,8 +3,9 @@
  * Handles all API calls to the backend
  */
 //
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/superadmin';
-const SETTINGS_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pointbox-backend-beta.vercel.app/api/settings';
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/superadmin`;
+console.log('API_BASE_URL:', API_BASE_URL);
+const SETTINGS_API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/settings`;
 
 interface ApiResponse<T> {
   success: boolean;
