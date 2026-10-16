@@ -49,9 +49,9 @@ const Transactions = () => {
         const mappedTransactions: Transaction[] = response.data.map((t: any) => ({
           id: t.transactionId || t._id || t.id,
           customerId: t.customer?._id || t.customer || '',
-          customerName: t.customer?.username || t.customer?.name || 'Unknown',
-          customerEmail: t.customer?.email || '',
-          companyName: t.company?.companyName || t.company?.name || t.brand || '',
+          customerName: t.customerName || t.customer?.username || t.customer?.name || 'Unknown',
+          customerEmail: t.customerEmail || t.customer?.email || '',
+          companyName: t.companyName || t.company?.companyName || t.company?.name || t.brand || '',
           amount:
             typeof t.redeem_points === 'number'
               ? t.redeem_points
